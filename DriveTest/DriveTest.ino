@@ -5,8 +5,8 @@
 #define NUM_LEDS 2
 #define DATA_PIN 9
 
-#define MF 5
-#define MB 6
+#define ML 5
+#define MR 6
 
 #define CHANNELS 8
 #define TIME_AVERAGE 3
@@ -17,10 +17,9 @@
 #define READY_ENABLE 1000
 #define READY_DISABLE 1900
 
-
 #define ZERO_CALIBRATION_DELAY 1000
 
-Servo mf, mb;
+Servo mL, mR;
 
 int ch_pins[CHANNELS] = {10, 16, 14, 15, A0, A1, A2, A3};
 int* ch_vals[CHANNELS];
@@ -43,8 +42,8 @@ int channelAverage(int channel){
 }
 
 void attachESC(){
-  mf.attach(MF);
-  mb.attach(MB);
+  mL.attach(ML);
+  mR.attach(MR);
 
   leds[0] = CRGB::Red;
   leds[1] = CRGB::Yellow;
@@ -156,12 +155,9 @@ void loop() {
   ch_vals[THR][TIME_AVERAGE - 1] = pulseIn(ch_pins[THR], HIGH);
 
   int thr = channelAverage(THR), x = channelAverage(X), y = channelAverage(Y);
-
-  int forwardVal = y < y_mid ? map(y, 900, y_mid, 2000, 1162) : 1100;
-
   
-  mf.writeMicroseconds(forwardVal);
-  mb.writeMicroseconds(y);
+  mL.writeMicroseconds(y);
+  mR.writeMicroseconds(y);
   
   int mappedX = map(channelAverage(X), 900, 2000, 0, 255);
   int mappedY = map(channelAverage(Y), 900, 2000, 0, 255); 
